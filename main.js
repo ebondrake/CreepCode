@@ -35,14 +35,15 @@ module.exports.loop = function () {
 			}
 		}
 	}
-
+	
+var upgradersTotal = 1
 	var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
 	if(upgraders.length < upgradersTotal && (Game.rooms.W27S28.energyAvailable > 200)) {
-		for(var u in upgradersTotal){
-			var creepName = Upgrader[u];
-			if(!Game.creeps.[creepName]{
-				Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE], creepName, {role: 'upgrader'});
-				console.log('Spawning: ' +creepName);
+		for(var u=1; u<=upgradersTotal;u++){
+			if(!Game.creeps.Upgrader+u){
+			    var name = 'Upgrader'+u;
+				Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE], name, {role: 'upgrader'});
+				console.log('Spawning: ' +name);
 			}
 		}
 	}
