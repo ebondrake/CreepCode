@@ -1,2 +1,3 @@
 # CreepCode
-Creep Code
+
+Learning Java. Source code for ai.
