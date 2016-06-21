@@ -25,6 +25,7 @@ module.exports.loop = function () {
 		}
 	}
 	
+	
 	var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
 	if(builders.length < buildersTotal && (Game.rooms.W27S28.energyAvailable > 200)) {
 		for(int b=1; b<buildersTotal; b++){
