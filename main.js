@@ -16,40 +16,37 @@ module.exports.loop = function () {
 		}
 	}
 
+	var creepName;
+	var creepRole;
+	var creepTotal;
+	if(harvesters.length < harvestersTotal && (Game.rooms.W27S28.energyAvailable > 200)){
+		creepName = 'Harvester';
+		creepRole = 'harvester';		
+		creepTotal = harvestersTotal;
+		}else{
+		if(builders.length < buildersTotal && (Game.rooms.W27S28.energyAvailable > 200)){
+			creepName = 'Builder';
+			creepRole = 'builder';	
+			creepTotal = buildersTotal;
+		}else{
+			if(upgraders.length < upgradersTotal && (Game.rooms.W27S28.energyAvailable > 200)) {
+				creepName = 'Upgrader';
+				creepRole = 'upgrader';		
+				creepTotal = upgradersTotal;
+			}			
+		}		
+	}
 
-	if(harvesters.length < harvestersTotal && (Game.rooms.W27S28.energyAvailable > 200)) {
-		for(var h=1; h<=harvestersTotal;h++){
-		    var name = 'Harvester'+h;
-			if(!Game.creeps.name){
-				Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE], name, {role: 'harvester'});
-				console.log('Spawning: ' +name);
+	for(var i=1; i<=creepTotal;i++){
+		creepName = creepName+i;
+		if(!Game.creeps.creepName){
+				Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE], creepName, {role: creepRole});
+				console.log('Spawning: ' + creepName);
 				break;
 			}
 		}
 	}
 	
-	if(builders.length < buildersTotal && (Game.rooms.W27S28.energyAvailable > 200)) {
-		for(var b=1; b<=buildersTotal;b++){
-		    var name = 'Builder'+b;
-			if(!Game.creeps.name){
-				Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE], name, {role: 'builder'});
-				console.log('Spawning: ' +name);
-				break;
-			}
-		}
-	}
-	
-	if(upgraders.length < upgradersTotal && (Game.rooms.W27S28.energyAvailable > 200)) {
-		for(var u=1; u<=upgradersTotal;u++){
-		    var name = 'Upgrader'+u;
-			if(!Game.creeps.name){
-				Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE], name, {role: 'upgrader'});
-				console.log('Spawning: ' +name);
-				break;
-			}
-		}
-	}
-
 	for(var name in Game.creeps) {
         var creep = Game.creeps[name];
         if(creep.memory.role == 'harvester') {
