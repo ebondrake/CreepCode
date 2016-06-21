@@ -8,6 +8,8 @@ module.exports.loop = function () {
     
 	var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
 	var harvestersTotal = 5;
+	var attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'attacker');
+	var attackersTotal = 2;
 	var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
 	var buildersTotal = 5;
 	var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
@@ -27,16 +29,19 @@ module.exports.loop = function () {
 		creepName = 'Harvester';
 		creepRole = 'harvester';		
 		creepTotal = harvestersTotal;
+		console.log('Need to spawn a new ' + creepName);
 		}else{
 		if(builders.length < buildersTotal && (Game.rooms.W27S28.energyAvailable > 200)){
 			creepName = 'Builder';
 			creepRole = 'builder';	
 			creepTotal = buildersTotal;
+			console.log('Need to spawn a new ' + creepName);
 		}else{
 			if(upgraders.length < upgradersTotal && (Game.rooms.W27S28.energyAvailable > 200)) {
 				creepName = 'Upgrader';
 				creepRole = 'upgrader';		
 				creepTotal = upgradersTotal;
+				console.log('Need to spawn a new ' + creepName);
 			}			
 		}		
 	}
