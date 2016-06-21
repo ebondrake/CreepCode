@@ -26,7 +26,7 @@ module.exports.loop = function () {
 	var creepRole;
 	var creepTotal;
 	
-	if(harvesters.length < harvestersTotal && (Game.rooms.W27S28.energyAvailable > 200)){
+	if(harvesters.length < harvestersTotal && (Game.rooms.W29S18.energyAvailable > 200)){
 		for(var i = 1; i <= harvestersTotal; i++){
 			var name = Harvester+i;
 			if(!Game.creeps.name){
@@ -36,7 +36,7 @@ module.exports.loop = function () {
 			}
 		}
 	}else{
-		if(builders.length < buildersTotal && (Game.rooms.W27S28.energyAvailable > 200)){
+		if(builders.length < buildersTotal && (Game.rooms.W29S18.energyAvailable > 200)){
 			for(var i = 1; i <= buildersTotal; i++){
 				var name = Builder+i;
 				if(!Game.creeps.name){
@@ -46,7 +46,7 @@ module.exports.loop = function () {
 				}
 			}
 		}else{
-			if(upgraders.length < upgradersTotal && (Game.rooms.W27S28.energyAvailable > 200)){
+			if(upgraders.length < upgradersTotal && (Game.rooms.W29S18.energyAvailable > 200)){
 				for(var i = 1; i <= upgradersTotal; i++){
 					var name = Upgrader+i;
 					if(!Game.creeps.name){
