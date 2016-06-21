@@ -4,8 +4,11 @@ var roleBuilder = require('role.builder');
 
 
 module.exports.loop = function () {
+	var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
 	var harvestersTotal = 2
+	var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
 	var buildersTotal = 2
+	var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
 	var upgradersTotal = 1
 	
 	for(var name in Memory.creeps) {
@@ -14,34 +17,31 @@ module.exports.loop = function () {
 		}
 	}
 
-	var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
-	if(harvesters.length < harvestersTotal && (Game.rooms.W27S28.energyAvailable > 200)) {		
-		for(var h in harvestersTotal){
-			var creepName = Harvester[h];
-			if(!Game.creeps.[creepName]{
-				Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE], creepName, {role: 'harvester'});
-				console.log('Spawning: ' +creepName);
+
+	if(harvesters.length < harvestersTotal && (Game.rooms.W27S28.energyAvailable > 200)) {
+		for(var h=1; h<=harvestersTotal;h++){
+		    var name = 'Harvester '+h;
+			if(!Game.creeps.name){
+				Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE], name, {role: 'harvester'});
+				console.log('Spawning: ' +name);
 			}
 		}
 	}
 	
-	var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
 	if(builders.length < buildersTotal && (Game.rooms.W27S28.energyAvailable > 200)) {
-		for(var b in buildersTotal){
-			var creepName = Builder[b];
-			if(!Game.creeps.[creepName]{
-				Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE], creepName, {role: 'builder'});
-				console.log('Spawning: ' +creepName);
+		for(var b=1; b<=buildersTotal;b++){
+		    var name = 'Builder '+b;
+			if(!Game.creeps.name){
+				Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE], name, {role: 'builder'});
+				console.log('Spawning: ' +name);
 			}
 		}
 	}
 	
-var upgradersTotal = 1
-	var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
 	if(upgraders.length < upgradersTotal && (Game.rooms.W27S28.energyAvailable > 200)) {
 		for(var u=1; u<=upgradersTotal;u++){
-			if(!Game.creeps.Upgrader+u){
-			    var name = 'Upgrader'+u;
+		    var name = 'Upgrader '+u;
+			if(!Game.creeps.name){
 				Game.spawns.Spawn1.createCreep([WORK,CARRY,MOVE], name, {role: 'upgrader'});
 				console.log('Spawning: ' +name);
 			}
