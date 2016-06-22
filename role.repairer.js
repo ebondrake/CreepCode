@@ -1,99 +1,103 @@
 var roleRepairer = {
 
-    /** @param {Creep} creep **/
-    run: function(creep) {
-        
-                //source ids
-        var Spawn1 = Game.spawns.Spawn1;
+  run: function(creep) {
+
+    //spawn id
+    var Spawn1 = Game.spawns.Spawn1;
+    var itemToRepair;
     
-        if(creep.carry.energy < creep.carryCapacity) {
-            if(Spawn1.transferEnergy(creep) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(Spawn1);
-            }
-        }else{
-            if( Spawn1.energy > 300) {
-                if(creep.carry.energy < creep.carryCapacity) {
-                    Spawn1.transferEnergy(creep);
-                }
-            }
-        }
-        
-    //find Spawn to repair
-        var spawnToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: function(object){
-                return object.structureType === STRUCTURE_SPAWN && (object.hits > object.hitsMax / 3);
-            } 
-        });
-        
-        if (spawnToRepair){
-            creep.moveTo(spawnToRepair);
-            creep.repair(spawnToRepair);
-            // perhaps check the results again?
-        }
+	       // creep.memory.repairing = true;
 
-    //find Extension to repair
-        var extensionToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: function(object){
-                return object.structureType === STRUCTURE_EXTENSION && (object.hits > object.hitsMax / 3);
-            } 
-        });
-        
-        if (extensionToRepair){
-            creep.moveTo(extensionToRepair);
-            creep.repair(extensionToRepair);
-            // perhaps check the results again?
-        }
+	    if(creep.memory.repairing && creep.carry.energy == 0) {
+            creep.memory.repairing = false;
+	    }
+	    if(!creep.memory.repairing && creep.carry.energy == creep.carryCapacity) {
+	        creep.memory.repairing = true;
+	    }
 
-    //find Rampart to repair
-        var rampartToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: function(object){
-                return object.structureType === STRUCTURE_RAMPART && (object.hits > object.hitsMax / 3);
-            } 
-        });
-        
-        if (rampartToRepair){
-            creep.moveTo(rampartToRepair);
-            creep.repair(rampartToRepair);
-            // perhaps check the results again?
-        }
 
-    
 
-    //find Wall to repair
-        var wallToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: function(object){
-                return object.structureType === STRUCTURE_WALL && (object.hits > object.hitsMax / 3);
-            } 
-        });
-        
-        if (wallToRepair){
-            creep.moveTo(wallToRepair);
-            creep.repair(wallToRepair);
-            // perhaps check the results again?
-        }
-    
 
-    //find Road to repair
-        var roadToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: function(object){
-                return object.structureType === STRUCTURE_ROAD && (object.hits > object.hitsMax / 3);
-            } 
-        });
-        
-        if (roadToRepair){
-            creep.moveTo(roadToRepair);
-            creep.repair(roadToRepair);
-            // perhaps check the results again?
-        }else{
-            if(creep.carry.energy = creep.carryCapacity) {
-                creep.moveTo(Game.flags.Harvester);
-            }
+    if(!creep.memory.repairing) {
+      if(Spawn1.energy > 100 && creep.carry.energy < creep.carryCapacity){
+        if(Spawn1.transferEnergy(creep) == ERR_NOT_IN_RANGE){
+          creep.moveTo(Spawn1);
         }
-        
+      }else{
+        creep.moveTo(Game.flags.Builder);
+      }
     }
-};
+
+    if(creep.memory.repairing){
+
+      //find items to repair
+      var spawnToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        filter: function(object){
+          return object.structureType === STRUCTURE_SPAWN && (object.hits < object.hitsMax / 2);
+        }
+      });
+
+      var extensionToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        filter: function(object){
+          return object.structureType === STRUCTURE_EXTENSION && (object.hits < object.hitsMax / 2);
+        }
+      });
+
+      var rampartToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        filter: function(object){
+          return object.structureType === STRUCTURE_RAMPART && (object.hits < object.hitsMax / 2);
+        }
+      });
+
+      var wallToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        filter: function(object){
+          return object.structureType === STRUCTURE_WALL && (object.hits < object.hitsMax / 2);
+        }
+      });
+
+      var roadToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        filter: function(object){
+          return object.structureType === STRUCTURE_ROAD && (object.hits < object.hitsMax / 2);
+        }
+      });
 
 
-module.exports = roleRepairer;
+      //var extensionToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: function(object){return object.structureType === STRUCTURE_EXTENSION && (object.hits > object.hitsMax / 3);}});
+//      var rampartToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: function(object){return object.structureType === STRUCTURE_RAMPART && (object.hits > object.hitsMax / 3);}});
+  //    var wallToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: function(object){return object.structureType === STRUCTURE_WALL && (object.hits > object.hitsMax / 3);}});
+    //  var roadToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: function(object){return object.structureType === STRUCTURE_ROAD && (object.hits > object.hitsMax / 3);}});
 
+      if (spawnToRepair){
+        itemToRepair = spawnToRepair;
+      }
 
+      else if (extensionToRepair) {
+        itemToRepair = extentionToRepair;
+      }
+
+      else if (rampartToRepair) {
+        itemToRepair = rampartToRepair;
+      }
+
+      else if (wallToRepair) {
+        itemToRepair = wallToRepair;
+      }
+
+      else if (roadToRepair) {
+        itemToRepair = roadToRepair;
+      }
+
+      if (itemToRepair){
+          //console.log(itemToRepair);
+        if(creep.repair(itemToRepair) == ERR_NOT_IN_RANGE){
+          creep.moveTo(itemToRepair);
+        }
+      }else {
+        creep.moveTo(Game.flags.Builder);
+      }
+
+    }//end if repairing
+
+  }//end run funciton
+
+};module.exports = roleRepairer;
