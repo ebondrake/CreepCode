@@ -9,6 +9,8 @@ var roleAttacker = {
                 creep.moveTo(target);
                 console.log('Attacking: ' + target);
             }
+        }else{
+            creep.moveTo(Game.flags.Attacker);
         }
 	}
 };
