@@ -1,29 +1,23 @@
 var roleHarvester = {
 
   run: function(creep) {
-    //source ids
-    var source = creep.pos.findClosestByPath(FIND_SOURCES);
-    creep.memory.source = source;
-
-    if(creep.carry.energy < creep.carryCapacity) {
-      if(creep.harvest(creep.memory.source) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(creep.memory.source);
+    if(this.energy < this.energyCapacity){
+      var energy = this.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+      if(!this.pos.isNearTo(energy)){
+        this.moveTo(energy);
+      }else {
+        this.harvest(energy);
       }
-
-    }else {//if creep carry capacity full
-
-      //find empty energy containers
-      var targets = creep.room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) && structure.energy < structure.energyCapacity;}});
-
+    }else{
+      var targets = this.room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_STORAGE || structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) && structure.energy < ;}});
       if(targets.length > 0) {
-        if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets[0]);
+        targets.sort((a,b) => a.energy - b.energy);
+        if(this.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          this.moveTo(targets[0]);
         }
-      }else {//energy full and no targets to fill
-        creep.moveTo(Game.flags.Harvester);
+      }else {
+        this.moveTo(Game.flags.Harvester);
       }
     }
-
-  }//end run function
-
+  }//END run function
 };module.exports = roleHarvester;
