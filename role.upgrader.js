@@ -2,9 +2,8 @@ var roleUpgrader = {
 
   run: function(creep) {
 
-  var source1 = Game.getObjectById('55db3344efa8e3fe66e05704');
-  var source2 = Game.getObjectById ('55db3344efa8e3fe66e05705');
-  var source = source2;
+    var source = creep.pos.findClosestByPath(FIND_SOURCES);
+    creep.memory.source = source;
 
   //set creep upgrading to false
   if(creep.memory.upgrading && creep.carry.energy == 0) {
@@ -17,8 +16,8 @@ var roleUpgrader = {
    }
 
    if(!creep.memory.upgrading) {
-     if(creep.harvest(source) == ERR_NOT_IN_RANGE) {
-       creep.moveTo(source);
+     if(creep.harvest(creep.memory.source) == ERR_NOT_IN_RANGE) {
+       creep.moveTo(creep.memory.source);
      }
    }else {
      if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
