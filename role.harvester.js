@@ -2,19 +2,12 @@ var roleHarvester = {
 
   run: function(creep) {
     //source ids
-    var source1 = Game.getObjectById('55db3344efa8e3fe66e05704');
-    var source2 = Game.getObjectById ('55db3344efa8e3fe66e05705');
-    var source = source1;
+    var source = creep.pos.findClosestByPath(FIND_SOURCES);
+    creep.memory.source = source;
 
     if(creep.carry.energy < creep.carryCapacity) {
-      if(creep.harvest(source1) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(source1);
-      }
-
-      if(creep.harvest(source1) == ERR_NO_PATH) {
-        if(creep.harvest(source2) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(source2);
-        }
+      if(creep.harvest(creep.memory.source) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(creep.memory.source);
       }
 
     }else {//if creep carry capacity full
