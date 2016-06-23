@@ -3,14 +3,12 @@ var roleRepairer = {
 //This will instruct the repair creeps to look for any objects that are above 1/3hp and heal them fully.
   run: function(creep) {
 
-    //spawn id
     //source ids
-    var source1 = Game.getObjectById('55db3344efa8e3fe66e05704');
-    var source2 = Game.getObjectById ('55db3344efa8e3fe66e05705');
-    var source = source2;
-    var itemToRepair;
+    var source = creep.pos.findClosestByPath(FIND_SOURCES);
+    creep.memory.source = source;
+    var itemToBuild;
 
-	    if(creep.memory.repairing && creep.carry.energy == 0) {
+	    if(creep.memory.repairing && creep.carry.energy <= 2) {
             creep.memory.repairing = false;
 	    }
 	    if(!creep.memory.repairing && creep.carry.energy == creep.carryCapacity) {
@@ -19,75 +17,83 @@ var roleRepairer = {
 
     if(!creep.memory.repairing) {
       if(creep.carry.energy < creep.carryCapacity) {
-        if(creep.harvest(source) == ERR_NOT_IN_RANGE && creep.carry.energy < creep.carryCapacity) {
-          creep.moveTo(source);
+        if(creep.harvest(creep.memory.source) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(creep.memory.source);
         }
       }else{
-        creep.moveTo(Game.flags.Repair);
+        creep.moveTo(Game.flags.Repairer);
       }
     }
 
     if(creep.memory.repairing){
 
-      //find items to repair
-      var spawnToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter: function(object){
-          return object.structureType === STRUCTURE_SPAWN && (object.hits >= object.hitsMax / 3);
-        }
-      });
+                var spawnToBuild = creep.room.find(FIND_STRUCTURES, {
+                    filter: function(object){
+                        return object.structureType === STRUCTURE_SPAWN && (object.hits >= object.hitsMax / 4) && (object.hits < object.hitsMax);
+                    }
+                });
 
-      var extensionToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter: function(object){
-          return object.structureType === STRUCTURE_EXTENSION && (object.hits >= object.hitsMax / 3);
-        }
-      });
+                var extensionToBuild = creep.room.find(FIND_STRUCTURES, {
+                  filter: function(object){
+                    return object.structureType === STRUCTURE_EXTENSION && (object.hits >= object.hitsMax / 4) && (object.hits < object.hitsMax);
+                  }
+                });
 
-      var rampartToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter: function(object){
-          return object.structureType === STRUCTURE_RAMPART && (object.hits >= object.hitsMax / 3);
-        }
-      });
+                var rampartToBuild = creep.room.find(FIND_STRUCTURES, {
+                  filter: function(object){
+                    return object.structureType === STRUCTURE_RAMPART && (object.hits >= object.hitsMax / 4) && (object.hits < object.hitsMax);
+                  }
+                });
 
-      var wallToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter: function(object){
-          return object.structureType === STRUCTURE_WALL && (object.hits >= object.hitsMax / 3);
-        }
-      });
+                var wallToBuild = creep.room.find(FIND_STRUCTURES, {
+                  filter: function(object){
+                    return object.structureType === STRUCTURE_WALL && (object.hits >= object.hitsMax / 4) && (object.hits < object.hitsMax);
+                  }
+                });
 
-      var roadToRepair = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter: function(object){
-          return object.structureType === STRUCTURE_ROAD && (object.hits >= object.hitsMax / 3);
-        }
-      });
+                var roadToBuild = creep.room.find(FIND_STRUCTURES, {
+                  filter: function(object){
+                    return object.structureType === STRUCTURE_ROAD && (object.hits >= object.hitsMax / 4) && (object.hits < object.hitsMax);
+                  }
+                });
 
-      if (spawnToRepair){
-        itemToRepair = spawnToRepair;
-      }
+                if (spawnToBuild.length){
+//                    console.log(creep.name + ' found Spawn to build.');
+                  itemToBuild = spawnToBuild;
+                }
 
-      else if (extensionToRepair) {
-        itemToRepair = extentionToRepair;
-      }
+                else if (extensionToBuild.length) {
+//                    console.log(creep.name + ' found Extention to build.');
+                  itemToBuild = extensionToBuild;
+                }
 
-      else if (rampartToRepair) {
-        itemToRepair = rampartToRepair;
-      }
+                else if (rampartToBuild.length) {
+//                    console.log(creep.name + ' found Rampart to build.');
+                  itemToBuild = rampartToBuild;
+                }
 
-      else if (wallToRepair) {
-        itemToRepair = wallToRepair;
-      }
+                else if (wallToBuild.length) {
+//                    console.log(creep.name + ' found Wall to build.');
+                  itemToBuild = wallToBuild;
+                }
 
-      else if (roadToRepair) {
-        itemToRepair = roadToRepair;
-      }
+                else if (roadToBuild.length) {
+//                    console.log(creep.name + ' found Road to build.');
+                  itemToBuild = roadToBuild;
+                }
 
-      if (itemToRepair){
-          //console.log(itemToRepair);
-        if(creep.repair(itemToRepair) == ERR_NOT_IN_RANGE){
-          creep.moveTo(itemToRepair);
-        }
-      }else {
-        creep.moveTo(Game.flags.Builder);
-      }
+//              console.log(creep.name + ' has an item to build and is sorting them.');
+              itemToBuild.sort((a,b) => a.hits - b.hits);
+
+                if (itemToBuild.length){
+                  if(creep.repair(itemToBuild[0]) == ERR_NOT_IN_RANGE){
+//                    console.log(creep.name + ' item not in range ' + itemToBuild.name);
+                    creep.moveTo(itemToBuild[0]);
+                  }//no item to build
+                }else {
+//                  console.log(creep.name + ' is building but has no items to build so waiting at flag.');
+                  creep.moveTo(Game.flags.Builder);
+                }
 
     }//end if repairing
 
