@@ -17,3 +17,4 @@ var roleAttacker = {
   }//end run function
 
 };module.exports = roleAttacker;
+ 
