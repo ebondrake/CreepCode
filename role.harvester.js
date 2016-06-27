@@ -8,7 +8,7 @@ var roleHarvester = {
 
     //if not harvesting and not carrying energy set harvesting to true.
     if(!creep.memory.harvesting && creep.carry.energy === 0){
-      var energy = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+      //var energy = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
       creep.memory.harvesting = true;
     }
 
@@ -26,7 +26,7 @@ var roleHarvester = {
             creep.moveTo(droppedEnergy);
           }
         }else{
-          //var energy = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+          var energy = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
           if(creep.harvest(energy) === ERR_NOT_IN_RANGE){
             creep.moveTo(energy);
           }
