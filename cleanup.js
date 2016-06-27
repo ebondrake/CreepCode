@@ -7,13 +7,6 @@ var cleanup = {
         delete Memory.creeps[name];
       }
     }
-
-    for(var name in Memory) {
-      if(!Game[name]) {
-        delete Memory[name];
-      }
-    }
-
   }
 
 };module.exports = cleanup;
