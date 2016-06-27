@@ -8,7 +8,7 @@ var roomDefense = {
       }
     }
 
-    if(tower && (Memory.harvester.length == Memory.harvesterTotal) && (Memory.builder.length == Memory.builderTotal) && Memory.roomFull) {
+    if(tower && (Memory.harvester.length >= Memory.harvesterTotal) && (Memory.builder.length >= Memory.builderTotal)) {
       var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: (structure) => structure.hits < structure.hitsMax
       });
