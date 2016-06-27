@@ -1,116 +1,85 @@
 var roleBuilder = {
 
+  run: function(creep) {
 
-    run: function(creep) {
+    var buildCap = 500;
 
-      //source ids
-      var source = creep.pos.findClosestByPath(FIND_SOURCES);
-      creep.memory.source = source;
-      var itemToBuild;
+    if(creep.memory.building === null){
+      creep.memory.building = false;
+    }
+
+    if(creep.memory.building && creep.carry.energy === 0) {
+      creep.memory.building = false;
+    }
+
+    if(!creep.memory.building && creep.carry.energy === creep.carryCapacity) {
+	     creep.memory.building = true;
+     }
+
+     //creep.say(creep.memory.building);
+
+     if(!creep.memory.building) {
+       //creep.say(creep.carry.energy < creep.carryCapacity);
+       if(creep.carry.energy < creep.carryCapacity){
+         var extentionSource = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_EXTENSION) && structure.energy === structure.energyCapacity;}});
+         var spawnSource = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_SPAWN) && structure.energy === structure.energyCapacity;}});
+
+         if(extentionSource){
+           var energySource = extentionSource;
+         }else if (spawnSource) {
+           var energySource = spawnSource;
+         }
+         //console.log(energySource + ' - ' + Memory.harvesterFull + ' - ' + Memory.roomEnergy + ' - ' + Memory.roomEnergyCapacity / 2);
+         //console.log(energySource && Memory.harvesterFull && (Memory.roomEnergy >= Memory.roomEnergyCapacity / 2));
+         if(energySource && Memory.harvesterFull && (Memory.roomEnergy >= Memory.roomEnergyCapacity / 3)){
+           if(energySource.transferEnergy(creep) === ERR_NOT_IN_RANGE){
+             creep.moveTo(energySource);
+           }
+         }else {
+           //creep.say('Idle');
+           creep.moveTo(Game.flags.Idle);
+         }
+       }
+     }else {//if creep is building
+
+       //find items to finish building
+       var targets = creep.room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType === STRUCTURE_SPAWN ) && (structure.hits <= buildCap);}});
+       if (!targets.length){
+         targets = creep.room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType === STRUCTURE_EXTENSION ) && (structure.hits <= buildCap);}});
+         if (!targets.length) {
+           targets = creep.room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType === STRUCTURE_RAMPART ) && (structure.hits <= buildCap);}});
+           if (!targets.length) {
+             targets = creep.room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType === STRUCTURE_WALL ) && (structure.hits <= buildCap);}});
+             if (!targets.length) {
+               targets = creep.room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType === STRUCTURE_ROAD ) && (structure.hits <= buildCap);}});
+             }
+           }
+         }
+       }
 
 
-	    if(creep.memory.building && creep.carry.energy <= 2) {
-            creep.memory.building = false;
-//            console.log('building false');
-	    }
-	    if(!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
-	        creep.memory.building = true;
-//        console.log('building true');
-	    }
+       if(targets.length) {
+         targets.sort((a,b) => a.energy - b.energy);
+         if(creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
+           creep.moveTo(targets[0]);
+         }else{
+             //console.log(creep.name + ' is repairing ' + targets[0].structureType);
+         }
+       }else{//if no building target
 
+         targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+         if(targets.length) {
+           if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
+             creep.moveTo(targets[0]);
+           }
+         }else{//if no construction target
+           creep.moveTo(Memory.Idle);
+         }//END if no construction target
 
-	    if(!creep.memory.building) {
-//        console.log(creep.name + ' is not building');
-            if(creep.carry.energy < creep.carryCapacity){
-//              console.log(creep.name + ' is harvesting');
-                if(creep.harvest(creep.memory.source) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(creep.memory.source);
-                }
-            }else {
-//              console.log(creep.name + ' is not building, is full, and is going to wait by flag.');
-                creep.moveTo(Game.flags.Builder);
-            }
-	    }else {//if creep is building
-//            console.log(creep.name + ' is building!');
-            var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-            if(targets.length) {
-//                console.log(creep.name + ' is buildinga new construction site: ' + targets.name);
-                if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0]);
-                }//if target not in range
-            }else{//if no target
-//              console.log(creep.name + ' is looking for a structure to build to 1/3rd');
-                //find items to finish building
+       }//END if no building target
 
-                var spawnToBuild = creep.room.find(FIND_STRUCTURES, {
-                    filter: function(object){
-                        return object.structureType === STRUCTURE_SPAWN && (object.hits <= object.hitsMax / 3);
-                    }
-                });
+     }//END if building
 
-                var extensionToBuild = creep.room.find(FIND_STRUCTURES, {
-                  filter: function(object){
-                    return object.structureType === STRUCTURE_EXTENSION && (object.hits <= object.hitsMax / 3);
-                  }
-                });
+   }//END run function
 
-                var rampartToBuild = creep.room.find(FIND_STRUCTURES, {
-                  filter: function(object){
-                    return object.structureType === STRUCTURE_RAMPART && (object.hits <= object.hitsMax / 3);
-                  }
-                });
-
-                var wallToBuild = creep.room.find(FIND_STRUCTURES, {
-                  filter: function(object){
-                    return object.structureType === STRUCTURE_WALL && (object.hits <= object.hitsMax / 3);
-                  }
-                });
-
-                var roadToBuild = creep.room.find(FIND_STRUCTURES, {
-                  filter: function(object){
-                    return object.structureType === STRUCTURE_ROAD && (object.hits <= object.hitsMax / 3);
-                  }
-                });
-
-                if (spawnToBuild.length){
-//                    console.log(creep.name + ' found Spawn to build.');
-                  itemToBuild = spawnToBuild;
-                }
-
-                else if (extensionToBuild.length) {
-//                    console.log(creep.name + ' found Extention to build.');
-                  itemToBuild = extensionToBuild;
-                }
-
-                else if (rampartToBuild.length) {
-//                    console.log(creep.name + ' found Rampart to build.');
-                  itemToBuild = rampartToBuild;
-                }
-
-                else if (wallToBuild.length) {
-//                    console.log(creep.name + ' found Wall to build.');
-                  itemToBuild = wallToBuild;
-                }
-
-                else if (roadToBuild.length) {
-//                    console.log(creep.name + ' found Road to build.');
-                  itemToBuild = roadToBuild;
-                }
-
-  //              console.log(creep.name + ' has an item to build and is sorting them.');
-              itemToBuild.sort((a,b) => a.hits - b.hits);
-
-                if (itemToBuild.length){
-                  if(creep.repair(itemToBuild[0]) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(itemToBuild[0]);
-                  }//no item to build
-                }else {
-//                  console.log(creep.name + ' is building but has no items to build so waiting at flag.');
-                  creep.moveTo(Game.flags.Builder);
-                }
-
-            }//if no target
-      }//if building
-
-    }//end of run function
-  };module.exports = roleBuilder;
+ };module.exports = roleBuilder;
