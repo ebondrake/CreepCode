@@ -1,13 +1,13 @@
 var cleanup = require('cleanup');
+var memoryInit = require('memoryInit');
 var AIrun = require('AIrun');
 var AIspawn = require('AIspawn');
 var roomDefense = require('roomDefense');
 
 module.exports.loop = function () {
-
-  cleanup.run(cleanup);
-  AIrun.run(AIrun);
-  AIspawn.run(AIspawn);
-  roomDefense.run(roomDefense);
-
-}//END loop function
+    cleanup.run();
+    memoryInit.run();
+  AIrun.run();
+  AIspawn.run();
+  roomDefense.run();
+}
