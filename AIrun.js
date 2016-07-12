@@ -1,82 +1,45 @@
-var AIrun = {
-  run: function(AIrun) {
+var roleHarvester = require('role.harvester');
+var roleAttacker = require('role.attacker');
+var roleDefender = require('role.defender');
+var roleHealer = require('role.healer');
+var roleCollector = require('role.collector');
+var roleClaimer = require('role.claimer');
+var roleBuilder = require('role.builder');
+var roleUpgrader = require('role.upgrader');
+var roleSpawner = require('role.spawner');
 
-    Memory.harvester = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
-    Memory.attacker = _.filter(Game.creeps, (creep) => creep.memory.role == 'attacker');
-    Memory.upgrader = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-    Memory.builder = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-    Memory.repair = _.filter(Game.creeps, (creep) => creep.memory.role == 'repair');
-    Memory.explorer = _.filter(Game.creeps, (creep) => creep.memory.role == 'explorer');
+module.exports={
+  run: function(){
 
-    Memory.Idle = Game.flags.Idle;
-
-    //spawn amount
-    Memory.attackerTotal = 1;
-    Memory.upgraderTotal = 1;
-    Memory.builderTotal = 4;
-    Memory.repairTotal = 3;
-    Memory.explorerTotal = 0;
-    Memory.harvesterTotal = ((Memory.upgraderTotal + Memory.builderTotal + Memory.repairTotal) / 2);
-
-    if (Memory.harvesterFull = null){
-      Memory.harvesterFull = false;
-    }else {
-      Memory.harvesterFull = (Memory.harvester.length >= Memory.harvesterTotal);
-    }
-
-    if(Memory.cityLevel === null){
-      Memory.cityLevel = 1;
-    }
-
-    Memory.roomEnergy = Game.spawns.Home.room.energyAvailable;
-
-    Memory.roomEnergyCapacity = Game.spawns.Home.room.energyCapacityAvailable;
-
-    Memory.roomEnergyFull = (Game.spawns.Home.room.energyAvailable === Memory.roomEnergyCapacity);
+/**
+    var MOVE = 50;
+    var WORK = 100;
+    var CARRY = 50;
+    var ATTACK = 80;
+    var HEAL = 250;
+    var RANGEDATTACK = 150;
+    var TOUGH = 10;
+    var CLAIM = 600;
 
 
-    if(Game.spawns.Home.room.energyCapacityAvailable <= 300){
-      Memory.cityLevel = 1;
-    }
-    else if (Game.spawns.Home.room.energyCapacityAvailable > 300 && Game.spawns.Home.room.energyCapacityAvailable <= 550) {
-      Memory.cityLevel = 2;
-    }
-    else if (Game.spawns.Home.room.energyCapacityAvailable > 550 && Game.spawns.Home.room.energyCapacityAvailable <= 800) {
-      Memory.cityLevel = 3;
-    }
+        console.log(MOVE+MOVE+MOVE+MOVE+MOVE+MOVE+MOVE+MOVE+MOVE+MOVE+MOVE+MOVE +CLAIM+CLAIM+ ' total needed.');
+**/
 
-    //level 1 creeps
-    var roleHarvester = require('role.harvester');
-    var roleAttacker = require('role.attacker');
-    var roleUpgrader = require('role.upgrader');
-    var roleBuilder = require('role.builder');
-    var roleRepair = require('role.repair');
-    var roleExplorer = require('role.explorer');
-    //END level 1 creeps
 
-    for(var name in Game.creeps) {
+
+
+    roleSpawner.run(Game.spawns.Home);
+
+    for(let name in Game.creeps){
       var creep = Game.creeps[name];
-
-      if(creep.memory.role == 'harvester') {
-        roleHarvester.run(creep);
-      }
-      else if(creep.memory.role == 'attacker') {
-        roleAttacker.run(creep);
-      }
-      else if(creep.memory.role == 'upgrader') {
-        roleUpgrader.run(creep);
-      }
-      else if(creep.memory.role == 'builder') {
-        roleBuilder.run(creep);
-      }
-      else if(creep.memory.role == 'repair') {
-        roleRepair.run(creep);
-      }
-      else if(creep.memory.role == 'explorer') {
-        roleExplorer.run(creep);
-      }
-
-    }//end for loop
-
-  }//end function(spawn)
-};module.exports = AIrun;
+      if     (creep.memory.role == 'harvester') {roleHarvester.run(creep);}
+      else if(creep.memory.role == 'attacker')  {roleAttacker.run(creep);}
+      else if(creep.memory.role == 'defender')  {roleDefender.run(creep);}
+      else if(creep.memory.role == 'healer')  {roleHealer.run(creep);}
+      else if(creep.memory.role == 'collector') {roleCollector.run(creep);}
+      else if(creep.memory.role == 'claimer') {roleClaimer.run(creep);}
+      else if(creep.memory.role == 'builder')   {roleBuilder.run(creep);}
+      else if(creep.memory.role == 'upgrader')  {roleUpgrader.run(creep);}
+    }
+  }
+}
